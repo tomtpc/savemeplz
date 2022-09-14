@@ -1,0 +1,4 @@
+[]
+ansible_user=ubuntu ansible_ssh_private_key_file=../thanhhv_canada_home.pem ansible_ssh_extra_agrs='-o StrictHostKeyChecking=no'
+[]
+ansible_user=ubuntu ansible_ssh_private_key_file=../thanhhv_canada_home.pem ansible_ssh_extra_agrs='-o StrictHostKeyChecking=no'

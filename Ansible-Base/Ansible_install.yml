@@ -1,0 +1,15 @@
+---
+- hosts: ansible
+  become: yes
+  remote_user: ubuntu
+  become_user: root
+  tasks:
+    - name: Update all current packets
+      ansible.builtin.apt:
+        name: "*"
+        update_cache: yes
+
+    - name: Install ansible
+      apt:
+        name: "ansible"
+        update_cache: yes

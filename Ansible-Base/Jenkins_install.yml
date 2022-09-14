@@ -1,0 +1,51 @@
+#change IP and secret's key in hosts and inventory.txt
+---
+- hosts: jenkins
+  become: yes
+  remote_user: ubuntu
+  become_user: root
+  tasks:
+    
+    - name: ensure the jenkins apt repository key is installed
+      apt_key: url=https://pkg.jenkins.io/debian-stable/jenkins.io.key state=present
+      become: yes
+
+    - name: ensure the repository is configured
+      apt_repository: repo='deb https://pkg.jenkins.io/debian-stable binary/' state=present
+      become: yes
+
+    - name: Update all packet to latest version
+      ansible.builtin.apt:
+        name: "*"
+        update_cache: yes
+    
+    - name: Install prerequirements
+      ansible.builtin.apt:
+        name:
+          - fontconfig
+          - openjdk-11-jre
+
+    - name: ensure jenkins is installed
+      ansible.builtin.apt: 
+        name: "jenkins"
+        state: latest
+        update_cache: yes
+      become: yes
+
+    - name: ensure jenkins is running
+      ansible.builtin.service: 
+        name: "jenkins"
+        state: started
+
+    - name: Wait until the file Jenkins's initialAdminPassword is present before continuing
+      ansible.builtin.wait_for:
+        path: /var/lib/jenkins/secrets/initialAdminPassword
+
+    - name: Read Jenkins's default password
+      shell: |
+        cat /var/lib/jenkins/secrets/initialAdminPassword
+      register: file_content
+
+    - name: Print Jenkins's default password
+      debug:
+        msg: "{{ file_content.stdout }}"
